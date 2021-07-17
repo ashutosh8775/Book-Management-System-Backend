@@ -22,17 +22,25 @@ Router.get("/login/:useremail/:pass",(request,response)=>{
 })
 
 Router.post("/register", (request,response) => {
-    let pass=request.body.password;
- 
+    let pass= request.body.password;
     bcrypt.genSalt(saltRound, function(err,salt){
         bcrypt.hash(pass,salt,function(err,hash){
-            request.body.password=hash;
-            mysqlConnection.query('Insert into Users set ?', request.body,(err,data) =>{
-                if(err){
-                    response.send(err);
-                }else{
-                    response.send("Data inserted successfully!!!");
-                    
+            request.body.password = hash;
+            mysqlConnection.query('Insert into Users set ?', request.body, (err, data) =>{
+                if(err) {
+                    let errData = [{
+                        status: "error",
+                        message: err.code === 'ER_DUP_ENTRY' ? "Username/Email id already exist" : "Something went wrong!",
+                        data: err
+                    }];
+                    response.send(errData);
+                } else{
+                    let sucessData = [{
+                        status: "success",
+                        message: "You have been registered successfully",
+                        data: data
+                    }];
+                    response.send(sucessData);
                 }
             });   
         });
@@ -41,7 +49,7 @@ Router.post("/register", (request,response) => {
 });
 
 Router.get("/getReview/:id", (request, response) => {
-    let query = `Select r.*, u.firstname, u.lastname from Review r left join users u on r.user_id = u.id where book_id = '${request.params.id}' order by date desc`;
+    let query = `Select r.*, u.username from Review r left join users u on r.user_id = u.id where book_id = '${request.params.id}' order by date desc`;
     mysqlConnection.query(query, (err, data) => {
         if(err) {
             response.send(err);
