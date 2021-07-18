@@ -32,10 +32,8 @@ Router.post("/login/:useremail/:password",(request,response)=>{
                         
                         
                         const accessToken= createToken(data);
-                        response.cookie("access-token",accessToken,{
-                                 maxAge: 60*60*24*30*1000,
-                             });
-                             response.send("Logged In");
+                         
+                             response.status(200).json({response:{"status":0,"data":{id:data[0].id,username:data[0].username,accessToken:accessToken}}});
 
                     }
                     else{

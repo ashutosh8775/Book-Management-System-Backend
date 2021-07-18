@@ -6,10 +6,10 @@ const createToken=(user)=>{
 };
 
 const validateToken = (request,response,next) =>{
-   const accessToken = request.cookies["access-token"];
+   const accessToken = request.headers["Authorization"];
    console.log(accessToken);
    if(!accessToken)
-   return response.status(400).json({error:"user not athenticated"});
+   return response.status(401).json({error:"user is not athenticated"});
    try{
        const validateToken = verify(accessToken,"ASA@#$!623354sgdfhgsfd.!2123");
        if(validateToken){
