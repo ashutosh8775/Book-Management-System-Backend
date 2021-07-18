@@ -2,23 +2,58 @@ const express = require('express');
 const Router = express.Router();
 var cors = require('cors');
 const mysqlConnection = require('../dbconnect/mysqlconnection.js');
+const jwt = require('jsonwebtoken');
+const {createToken,validateToken}= require("./auth");
 const bcrypt= require('bcrypt');
 const saltRound=10;
+const session = require("express-session");
 
 
 
-Router.get("/", (request, response) => {
+
+
+Router.get("/", validateToken, (request, response) => {
     response.send("Welcome to Book Management project");
 })
 
-Router.get("/login/:useremail/:pass",(request,response)=>{
-    mysqlConnection .query(`Select * from Users where `,(err,data) =>{
+Router.post("/login/:useremail/:password",(request,response)=>{
+    let password= request.params.password;
+    mysqlConnection.query(`Select * from Users where username= '${request.params.useremail}' OR email= '${request.params.useremail}'`,(err,data) =>{
         if(err){
-            response.send(err);
-        } else{
-            response.send(data);
-        }
+            response.send("User not found");
+        }        
+            if(data.length>0){
+                bcrypt.compare(password,data[0].password,(err,result)=>{
+                    if(err){
+                        response.json({error:"Wrong password"});
+                    }
+                   
+                    if(result){
+                        
+                        
+                        const accessToken= createToken(data);
+                        response.cookie("access-token",accessToken,{
+                                 maxAge: 60*60*24*30*1000,
+                             });
+                             response.send("Logged In");
+
+                    }
+                    else{
+                        response.status(400).json({error:"You have entered wrong credential"});
+                    }
+                })
+            }
+            else{
+                response.status(400).json({error:"User doesn't exist"});
+            }
+            
+           
+        
+    
+
     });
+    
+    
 })
 
 Router.post("/register", (request,response) => {
@@ -55,5 +90,6 @@ Router.post("/register", (request,response) => {
 
 
 })
+
 
 module.exports = Router;
