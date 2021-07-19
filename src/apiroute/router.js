@@ -84,7 +84,7 @@ Router.get("/getReview/:id", (request, response) => {
     });  
 });
 
-Router.post("/addReview", (request, response) => {
+Router.post("/addReview", validateToken,(request, response) => {
     mysqlConnection.query('Insert into Review set ?', request.body, (err, data) => {
         if(err){
             let errData = [{

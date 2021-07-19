@@ -6,8 +6,7 @@ const createToken=(user)=>{
 };
 
 const validateToken = (request,response,next) =>{
-   const accessToken = request.headers["Authorization"];
-   console.log(accessToken);
+   const accessToken = request.headers["authorization"];
    if(!accessToken)
    return response.status(401).json({error:"user is not athenticated"});
    try{
