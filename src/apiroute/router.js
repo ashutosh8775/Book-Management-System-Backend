@@ -12,37 +12,29 @@ const session = require("express-session");
 
 
 
-Router.get("/", validateToken, (request, response) => {
-    response.send("Welcome to Book Management project");
-})
+
 
 Router.post("/login/:useremail/:password",(request,response)=>{
     let password= request.params.password;
     mysqlConnection.query(`Select * from Users where username= '${request.params.useremail}' OR email= '${request.params.useremail}'`,(err,data) =>{
-        if(err){
-            response.send("User not found");
-        }        
+             
             if(data.length>0){
                 bcrypt.compare(password,data[0].password,(err,result)=>{
-                    if(err){
-                        response.json({error:"Wrong password"});
-                    }
+                  
                    
                     if(result){
-                        
-                        
-                        const accessToken= createToken(data);
+                       const accessToken= createToken(data);
                          
-                             response.status(200).json({response:{"status":0,"data":{id:data[0].id,username:data[0].username,accessToken:accessToken}}});
+                             response.status(200).json({response:{status:"success","data":{id:data[0].id,username:data[0].username,accessToken:accessToken}}});
 
                     }
                     else{
-                        response.status(400).json({error:"You have entered wrong credential"});
+                        response.status(400).json({status:"error",message:"You have entered wrong password"});
                     }
                 })
             }
             else{
-                response.status(400).json({error:"User doesn't exist"});
+                response.status(400).json({status:"error",message:"Invalid credential"});
             }
             
            
