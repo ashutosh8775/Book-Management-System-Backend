@@ -25,16 +25,16 @@ Router.post("/login/:useremail/:password",(request,response)=>{
                     if(result){
                        const accessToken= createToken(data);
                          
-                             response.status(200).json({response:{status:"success","data":{id:data[0].id,username:data[0].username,accessToken:accessToken}}});
+                             response.status(200).json({response:{status:"success",data:{id:data[0].id,username:data[0].username,accessToken:accessToken}}});
 
                     }
                     else{
-                        response.status(400).json({status:"error",message:"You have entered wrong password"});
+                        response.send({response:{status:"error",message:"You have entered wrong password"}});
                     }
                 })
             }
             else{
-                response.status(400).json({status:"error",message:"Invalid credential"});
+                response.send({response:{status:"error",message:"Invalid Credential"}});
             }
             
            
