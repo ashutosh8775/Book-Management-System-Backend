@@ -11,40 +11,24 @@ UserApi.get("/userapi",(req,res)=>{
 });
 
 
-UserApi.post("/login/:useremail/:password",(request,response)=>{
-    let password= request.params.password;
-    mysqlConnection.query(`Select * from Users where username= '${request.params.useremail}' OR email= '${request.params.useremail}'`,(err,data) =>{
-             
-            if(data.length>0){
-                bcrypt.compare(password,data[0].password,(err,result)=>{
-                  
-                   
-                    if(result){
-                       const accessToken= createToken(data);
-                         
-                             response.status(200).json({response:{status:"success",data:{id:data[0].id,username:data[0].username,accessToken:accessToken}}});
-
-                    }
-                    else{
-                        response.send({response:{status:"error",message:"You have entered wrong password"}});
-                    }
-                })
-            }
-            else{
-                response.send({response:{status:"error",message:"Invalid Credential"}});
-            }
-            
-           
-        
-    
-
+UserApi.post("/login",(request,response)=>{
+    let password= request.body.password;
+    mysqlConnection.query(`Select * from Users where username= '${request.body.email_username}' OR email= '${request.body.password}'`,(err,data) =>{
+        if(data.length>0){
+            bcrypt.compare(password,data[0].password,(err,result)=>{
+                if(result){
+                    const accessToken= createToken(data); 
+                    response.status(200).json({response:{status:"success",data:{id:data[0].id,username:data[0].username,accessToken:accessToken}}});
+                }
+                else{
+                    response.send({response:{status:"error",message:"You have entered wrong password"}});
+                }
+            });
+        } else {
+            response.send({response:{status:"error",message:"Invalid Credential"}});
+        }
     });
-    
-    
 })
-
-
-
 
 UserApi.post("/register", (request,response) => {
     let pass= request.body.password;
@@ -59,7 +43,7 @@ UserApi.post("/register", (request,response) => {
                         data: err
                     }];
                     response.send(errData);
-                } else{
+                } else {
                     let sucessData = [{
                         status: "success",
                         message: "You have been registered successfully",
@@ -69,7 +53,6 @@ UserApi.post("/register", (request,response) => {
                 }
             });   
         });
-  
     });
 });
 

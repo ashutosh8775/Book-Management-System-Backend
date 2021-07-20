@@ -10,7 +10,7 @@ reviewApi.get("/review",(req,res) => {
 
 
 reviewApi.get("/getReview/:id", (request, response) => {
-    let query = `Select r.*, u.username from Review r left join users u on r.user_id = u.id where book_id = '${request.params.id}' order by date desc`;
+    let query = `Select r.*, u.username from Review r join users u on r.user_id = u.id where book_id = '${request.params.id}' order by date desc`;
     mysqlConnection.query(query, (err, data) => {
         if(err) {
             response.send(err);
