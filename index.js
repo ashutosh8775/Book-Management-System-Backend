@@ -1,19 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const Router = require('./src/apiroute/router.js');
+const UserApi= require('./src/Routes/Api/userApi');
 const cors = require('cors');
-var app = express();
+const app = express();
+const dotenv=require("dotenv");
+const bookApi = require('./src/Routes/Api/bookApi');
+const reviewApi = require('./src/Routes/Api/reviewApi');
+dotenv.config();
 
-
-// app.use(function(req, res, next) {
-//   //res.header("Access-Control-Allow-Origin", "*");
-//   //res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-//   //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-//   next();
-// });
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
-app.use("/", Router);
-
-app.listen(3002,()=> console.log('server is running at 3002'));
+app.use("/", UserApi);
+app.use("/",bookApi);
+app.use("/",reviewApi);
+app.listen(process.env.PORT,()=> console.log(`Server is running at ${process.env.PORT}`));

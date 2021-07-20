@@ -1,7 +1,8 @@
 const {sign, verify} = require("jsonwebtoken");
 
 const createToken=(user)=>{
-    const accessToken= sign({username:user[0].username,id:user[0].id},"ASA@#$!623354sgdfhgsfd.!2123");
+   
+    const accessToken= sign({username:user[0].username,id:user[0].id},process.env.SECRET_KEY);
      return accessToken;
 };
 
@@ -10,7 +11,7 @@ const validateToken = (request,response,next) =>{
    if(!accessToken)
    return response.status(401).json({error:"user is not athenticated"});
    try{
-       const validateToken = verify(accessToken,"ASA@#$!623354sgdfhgsfd.!2123");
+       const validateToken = verify(accessToken,process.env.SECRET_KEY);
        if(validateToken){
            request.authenticated = true;
            return next();
