@@ -3,10 +3,6 @@ const bookApi = express.Router();
 const mysqlConnection= require('../../config/mysqlconnection');
 
 
-bookApi.get("/bookapi",(req,res) =>{
-    res.send("Calling book Api")
-});
-
 bookApi.get("/books",(request,response)=>{
     mysqlConnection.query(`Select * from Books `,(err,data) =>{
         if(err){

@@ -4,11 +4,6 @@ const mysqlConnection= require('../../config/mysqlconnection');
 const {validateToken}= require("../Auth/auth");
 
 
-reviewApi.get("/review",(req,res) => {
-    res.send("calling Review api");
-})
-
-
 reviewApi.get("/getReview/:id", (request, response) => {
     let query = `Select r.*, u.username from Review r join users u on r.user_id = u.id where book_id = '${request.params.id}' order by date desc`;
     mysqlConnection.query(query, (err, data) => {

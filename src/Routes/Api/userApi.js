@@ -6,11 +6,6 @@ const mysqlConnection= require('../../config/mysqlconnection');
 const {createToken}= require("../Auth/auth");
 
 
-UserApi.get("/userapi",(req,res)=>{
-    res.send("Welcome to User Route");
-});
-
-
 UserApi.post("/login",(request,response)=>{
     let password= request.body.password;
     mysqlConnection.query(`Select * from Users where username= '${request.body.email_username}' OR email= '${request.body.email_username}'`,(err,data) =>{
