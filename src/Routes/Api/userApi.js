@@ -13,7 +13,7 @@ UserApi.get("/userapi",(req,res)=>{
 
 UserApi.post("/login",(request,response)=>{
     let password= request.body.password;
-    mysqlConnection.query(`Select * from Users where username= '${request.body.email_username}' OR email= '${request.body.password}'`,(err,data) =>{
+    mysqlConnection.query(`Select * from Users where username= '${request.body.email_username}' OR email= '${request.body.email_username}'`,(err,data) =>{
         if(data.length>0){
             bcrypt.compare(password,data[0].password,(err,result)=>{
                 if(result){
